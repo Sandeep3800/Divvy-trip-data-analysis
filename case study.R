@@ -83,31 +83,14 @@ cyclistic_data$date <- as.Date(cyclistic_data$started_at)
 
 > cyclistic_data$day_of_week <- format(as.Date(cyclistic_data$date), "%A")
 
-> cyclistic_data$month <- format(as.Date(cyclistic_data$date), '%m')
-
-> cyclistic_data$day <- format(as.Date(cyclistic_data$day), '%d')
-Error in `$<-`:
-! Assigned data `format(as.Date(cyclistic_data$day), "%d")` must be compatible with existing data.
-✖ Existing data has 5667717 rows.
-✖ Assigned data has 0 rows.
-ℹ Only vectors of size 1 are recycled.
-Caused by error in `vectbl_recycle_rhs_rows()`:
-! Can't recycle input of size 0 to size 5667717.
-Run `rlang::last_trace()` to see where the error occurred.
-Warning message:
-Unknown or uninitialised column: `day`. 
+> cyclistic_data$month <- format(as.Date(cyclistic_data$date), '%m') 
 
  cyclistic_data$day <- format(as.Date(cyclistic_data$date), '%d')
  
  cyclistic_data$year <-format(as.Date(cyclistic_data$date), '%y')
 
- 
 > cyclistic_data$time <- format(as.Date(cyclistic_data$date), '%h:%m:%s')
 
-> cyclistic_data$time <- as_hms(cyclistic_data$date)
-Error in `as_hms()`:
-! Can't convert `x` <date> to <time>.
-Run `rlang::last_trace()` to see where the error occurred.
 > cyclistic_data$time <- as_hms(cyclistic_data$started_at)
 > cyclistic_data$hour <- hour(cyclistic_data$time)
 > 
@@ -179,11 +162,6 @@ Run `rlang::last_trace()` to see where the error occurred.
 3 electric_bike 1596899
  
  # total rides by member type
- cyclistic_data %>% 
-+ groupby(member_casual) %>% 
-+ count(hour) %>%
-+ print(n = 48)
-Error in groupby(., member_casual) : could not find function "groupby"
 > cyclistic_data %>% 
 + group_by(member_casual) %>%
 + count(hour) %>% 
@@ -340,16 +318,6 @@ cyclistic_data"
   <chr>         <int>
 1 Evening     1213022
  
- cyclistic_df %>%
-+ group_by(member_casual) %>% 
-+ filter(time_of_day == 'Night') %>%
-+ count(time_of_day)
-Error in `filter()`:
-ℹ In argument: `time_of_day == "Night"`.
-ℹ In group 1: `member_casual = "casual"`.
-Caused by error:
-! object 'time_of_day' not found
-Run `rlang::last_trace()` to see where the error occurred.
  cyclistic_data %>% 
 + filter(time_of_day == "Night") %>%
 + count(time_of_day)
@@ -357,6 +325,7 @@ Run `rlang::last_trace()` to see where the error occurred.
   time_of_day      n
   <chr>        <int>
 1 Night       174433
+
  cyclistic_data %>% 
 + group_by(member_casual) %>%
 + filter(time_of_day == "Night") %>% 
@@ -397,17 +366,7 @@ Run `rlang::last_trace()` to see where the error occurred.
 4 Night        174433
 > 
 > cyclistic_data %>%
-+ group_by(member_casual) %>%
-+ count(time_of_week)
-Error in `count()`:
-! Must group by variables found in `.data`.
-✖ Column `time_of_week` is not found.
-Run `rlang::last_trace()` to see where the error occurred.
-> last_trace()
-Error in last_trace() : could not find function "last_trace"
-> cyclistic_data %>%
-+ group_by(member_casual) %>%
-+ 
++ group_by(member_casual) %>% 
 + count(day_of_week)
 # A tibble: 14 × 3
 # Groups:   member_casual [2]
@@ -648,8 +607,6 @@ Error in last_trace() : could not find function "last_trace"
 3 Summer 1868215
 4 Winter  304695
 > 
-> cyclistic_avgride <- mean(cyclistic_date$ride_length)
-Error: object 'cyclistic_date' not found
 > cyclistic_avgride <- mean(cyclistic_data$ride_length)
 > print(cyclistic_avgride)
 Time difference of 17.09677 mins
@@ -743,12 +700,6 @@ Time difference of 17.09677 mins
 48    23 member        12.49728 mins
 > 
 > # morning rides
-> cyclistic_data %>%
-+ group_by(member_casual) %>%
-+ filter(time_of_day =='Morning') %>%
-+ sumamrise_at(vars(ride_length), list(time = mean))
-Error in sumamrise_at(., vars(ride_length), list(time = mean)) : 
-  could not find function "sumamrise_at"
 > library(dplyr)
 > 
 > cyclistic_data %>%
@@ -793,13 +744,6 @@ Error in sumamrise_at(., vars(ride_length), list(time = mean)) :
 > 
 > cyclistic_data %>%
 + filter(time_of_day == 'Afternoon') %>%
-+ summarise_at(vars(ride_of_length), list(time = mean))
-Error in `tbl_at_vars()`:
-! Can't subset columns that don't exist.
-✖ Column `ride_of_length` doesn't exist.
-Run `rlang::last_trace()` to see where the error occurred.
-> cyclistic_data %>%
-+ filter(time_of_day == 'Afternoon') %>%
 + summarise_at(vars(ride_length), list(time = mean))
 # A tibble: 1 × 1
   time         
@@ -817,11 +761,6 @@ Run `rlang::last_trace()` to see where the error occurred.
 1 casual        21.85279 mins
 2 member        12.84733 mins
 > 
-> cyclistic_data %>% 
-+ filter(time_of_day == 'Evening') %>%
-+ sumamrise_at(vars(ride_length), list(time = mean))
-Error in sumamrise_at(., vars(ride_length), list(time = mean)) : 
-  could not find function "sumamrise_at"
 > cyclistic_data %>%
 + filter(time_of_day == 'Evening') %>%
 + summarise_at(vars(ride_length), list(time = mean))
@@ -880,11 +819,6 @@ Error in sumamrise_at(., vars(ride_length), list(time = mean)) :
 > 
 > cyclistic_data %>%
 + group_by(time_of_day) %>%
-+ sumamrise_at(vars(ride_length), list(time = mean))
-Error in sumamrise_at(., vars(ride_length), list(time = mean)) : 
-  could not find function "sumamrise_at"
-> cyclistic_data %>%
-+ group_by(time_of_day) %>%
 + summarise_at(vars(ride_length), list(time = mean))
 # A tibble: 4 × 2
   time_of_day time         
@@ -895,11 +829,6 @@ Error in sumamrise_at(., vars(ride_length), list(time = mean)) :
 4 Night       16.71022 mins
 > 
 > # day of week
-> cyclistic_data %>%
-+ group_by(day_of_week, member_casual) %>%
-+ sumamrise_at(vars(ride_length), list(time = mean))
-Error in sumamrise_at(., vars(ride_length), list(time = mean)) : 
-  could not find function "sumamrise_at"
 > cyclistic_data %>% 
 + group_by(day_of_week, member_casual) %>%
 + summarise_at(vars(ride_length), list(time = mean))
@@ -1010,11 +939,6 @@ Error in sumamrise_at(., vars(ride_length), list(time = mean)) :
 62 31    member        12.57957 mins
 > 
 > # average ride length
-> cyclistic_data %>%
-+ group_by(day) %>%
-+ sumamrise_at(vars(ride_length), list(time = mean))
-Error in sumamrise_at(., vars(ride_length), list(time = mean)) : 
-  could not find function "sumamrise_at"
 > cyclistic_data %>%
 + group_by(day) %>%
 + summarise_at(vars(ride_length), list(time = mean))
@@ -1165,35 +1089,5 @@ Error in sumamrise_at(., vars(ride_length), list(time = mean)) :
 7 Winter casual        20.05550 mins
 8 Winter member        10.35396 mins
 > 
-> install.packages("ggplot2")
-Warning: package ‘ggplot2’ is in use and will not be installed
 > library(ggplot2)
 > 
-> ggplot(data = cyclistic_data) + geom_bar(mapping = aes(x = member_casual, y = ride_length, fill = member_casual))
-Don't know how to automatically pick scale for object of type <difftime>.
-Defaulting to continuous.
-Error in `geom_bar()`:
-! Problem while computing stat.
-ℹ Error occurred in the 1st layer.
-Caused by error in `setup_params()`:
-! `stat_count()` must only have an x or y aesthetic.
-Run `rlang::last_trace()` to see where the error occurred.
-> ggplot(data = cyclistic_data) +
-+   geom_bar(mapping = aes(x = member_casual, fill = member_casual))
-> ggplot(data = cyclistic_data) + geom_bar(mapping = aes(x = seaon, y = ride_length, fill = member_casual)
-+ )
-Error in `geom_bar()`:
-! Problem while computing aesthetics.
-ℹ Error occurred in the 1st layer.
-Caused by error:
-! object 'seaon' not found
-Run `rlang::last_trace()` to see where the error occurred.
-> view(cyclistic_data)
-> view(cyclistic_data)
-> ggplot(data = cyclistic_data) +
-+ +   geom_bar(mapping = aes(x = member_casual, fill = member_casual))
-Error in `+.gg`:
-! Cannot use `+` with a single argument
-ℹ Did you accidentally put `+` on a new line?
-Run `rlang::last_trace()` to see where the error occurred.
-> ggplot(data = cyclistic_df) + geom_bar(mapping = aes(x = member_casual, fill = member_casual))
